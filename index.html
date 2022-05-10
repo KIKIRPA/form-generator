@@ -17,6 +17,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@2.11.3/dist/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@2.11.3/dist/third-party.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@2.11.3/dist/main.css">
+
+    <script src="./dist/v-jsoneditor.min.js"></script>
 </head>
 
 <body>
@@ -25,20 +27,48 @@
             <v-card class="mt-6">
                 <v-card-title>
                     <v-tabs v-model="tab" grow>
+                        <v-tab><v-icon>mdi-information-outline</v-icon></v-tab>
                         <v-tab>Schema</v-tab>
                         <v-tab>Form</v-tab>
                         <v-tab>Instance</v-tab>
                     </v-tabs>
                 </v-card-title>
-                <v-card-text v-if="tab === 0" >
-                    <v-textarea
-                        style="font-family:'monospace'; font-size: 70%; white-space: pre;"
-                        wrap="off"
-                        auto-grow
-                        v-text="schema">
-                    </v-textarea>
+                <v-card-text v-if="tab === 0">
+                    <br/>
+                    <h2>JSON Schema Forms</h2><br/>
+                    <p>
+                        This tool generates nice webforms based on a <a href="https://json-schema.org/">JSON schema</a>. 
+                        Internally, it uses <a href="https://github.com/koumoul-dev/vuetify-jsonschema-form">VJSF</a>, a component for Vue.js and Vuetify.
+                        Besides standard JSON schema, VJSF supports a few additional properties, mainly for rendering purposes.
+                    </p>
+                    <p>
+                        To get started, put a valid JSON schema in the editor on the "Schema" tab. 
+                        VJSF will automatically generate a form, that can be viewed on the "Form" tab. 
+                        Data entered in the form will automatically entered in the instance (in JSON format), which can be viewed on the "Instance" tab.
+                        Conversely, data entered in the instance editor will automatically be entered in the form.
+                    </p>
+                    <p>
+                        No data is sent to the server. Both the schema and the instance are living locally in your browser.
+                    </p>
+                    <p>
+                        TO DO: VJSF has very basic validation. An external JSON schema validator library can be used instead.
+                    </p><br/>
+                    <h2>Credits</h2><br/>
+                    <ul>
+                        <li><a href="https://github.com/koumoul-dev/vuetify-jsonschema-form">VJSF</a> by Alban Mouton</li>
+                        <li><a href="https://github.com/yansenlei/VJsoneditor">v-jsoneditor</a> by yansenlei</li>
+                    </ul><br/>
+                    <h2>Code</h2><br/>
+                    <p><a href="https://github.com/kobbejager/json-schema-form">github.com/kobbejager/json-schema-form</a></p>
                 </v-card-text>
-                <v-card-text v-if="tab === 1" >
+                <v-card-text v-if="tab === 1">
+                    <v-jsoneditor 
+                        ref="editor" 
+                        v-model="schema" 
+                        height="50rem"
+                        @error="onError"></v-jsoneditor>
+                </v-card-text>
+                <v-card-text v-if="tab === 2">
                     <v-form ref="form" v-model="isValid">
                         <v-jsf 
                             v-model="data"
@@ -46,12 +76,12 @@
                             :options="options"></v-jsf>
                     </v-form>
                 </v-card-text>
-                <v-card-text v-if="tab === 2" >
-                    <v-textarea
-                        style="font-family:'monospace'; font-size: 70%; white-space: pre;"
-                        wrap="off"
-                        auto-grow
-                        v-text="data">
+                <v-card-text v-if="tab === 3">
+                    <v-jsoneditor 
+                        ref="editor" 
+                        v-model="data" 
+                        height="50rem"
+                        @error="onError"></v-jsoneditor>
                     </v-textarea>
                 </v-card-text>
             </v-card>
@@ -108,7 +138,9 @@
             },
 
             methods: {
-                
+                onError(err){
+                    console.log(err)
+                },
             }
         })
     </script>
