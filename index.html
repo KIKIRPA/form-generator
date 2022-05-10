@@ -21,40 +21,41 @@
 
 <body>
     <v-app id="app">
-
-        <v-card class="mt-6">
-            <v-card-title>
-                <v-tabs v-model="tab" grow>
-                    <v-tab>Schema</v-tab>
-                    <v-tab>Form</v-tab>
-                    <v-tab>Instance</v-tab>
-                </v-tabs>
-            </v-card-title>
-            <v-card-text v-if="tab === 0" >
-                <v-textarea
-                    style="font-family:'monospace'; font-size: 70%; white-space: pre;"
-                    wrap="off"
-                    auto-grow
-                    v-text="schema">
-                </v-textarea>
-            </v-card-text>
-            <v-card-text v-if="tab === 1" >
-                <v-form ref="form" v-model="isValid">
-                    <v-jsf 
-                        v-model="data"
-                        :schema="schema" 
-                        :options="options"></v-jsf>
-                </v-form>
-            </v-card-text>
-            <v-card-text v-if="tab === 2" >
-                <v-textarea
-                    style="font-family:'monospace'; font-size: 70%; white-space: pre;"
-                    wrap="off"
-                    auto-grow
-                    v-text="data">
-                </v-textarea>
-            </v-card-text>
-        </v-card>
+        <v-container>
+            <v-card class="mt-6">
+                <v-card-title>
+                    <v-tabs v-model="tab" grow>
+                        <v-tab>Schema</v-tab>
+                        <v-tab>Form</v-tab>
+                        <v-tab>Instance</v-tab>
+                    </v-tabs>
+                </v-card-title>
+                <v-card-text v-if="tab === 0" >
+                    <v-textarea
+                        style="font-family:'monospace'; font-size: 70%; white-space: pre;"
+                        wrap="off"
+                        auto-grow
+                        v-text="schema">
+                    </v-textarea>
+                </v-card-text>
+                <v-card-text v-if="tab === 1" >
+                    <v-form ref="form" v-model="isValid">
+                        <v-jsf 
+                            v-model="data"
+                            :schema="schema" 
+                            :options="options"></v-jsf>
+                    </v-form>
+                </v-card-text>
+                <v-card-text v-if="tab === 2" >
+                    <v-textarea
+                        style="font-family:'monospace'; font-size: 70%; white-space: pre;"
+                        wrap="off"
+                        auto-grow
+                        v-text="data">
+                    </v-textarea>
+                </v-card-text>
+            </v-card>
+        </v-container>
 
         <v-container fill-height></v-container> <!-- fills remaining horizontal space, if necessary -->
 
@@ -100,10 +101,10 @@
             data: {
                 data: {},
                 schema: {},
-                form,
-                isValid,
-                options,
-                tab,
+                form: null,
+                isValid: null,
+                options: null,
+                tab: null,
             },
 
             methods: {
