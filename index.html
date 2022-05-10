@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON SCHEMA FORM</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@2.11.3/dist/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@2.11.3/dist/third-party.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@2.11.3/dist/main.css">
+</head>
+
+<body>
+    <v-app id="app">
+
+        <v-card class="mt-6">
+            <v-card-title>
+                <v-tabs v-model="tab" grow>
+                    <v-tab>Schema</v-tab>
+                    <v-tab>Form</v-tab>
+                    <v-tab>Instance</v-tab>
+                </v-tabs>
+            </v-card-title>
+            <v-card-text v-if="tab === 0" >
+                <v-textarea
+                    style="font-family:'monospace'; font-size: 70%; white-space: pre;"
+                    wrap="off"
+                    auto-grow
+                    v-text="schema">
+                </v-textarea>
+            </v-card-text>
+            <v-card-text v-if="tab === 1" >
+                <v-form ref="form" v-model="isValid">
+                    <v-jsf 
+                        v-model="data"
+                        :schema="schema" 
+                        :options="options"></v-jsf>
+                </v-form>
+            </v-card-text>
+            <v-card-text v-if="tab === 2" >
+                <v-textarea
+                    style="font-family:'monospace'; font-size: 70%; white-space: pre;"
+                    wrap="off"
+                    auto-grow
+                    v-text="data">
+                </v-textarea>
+            </v-card-text>
+        </v-card>
+
+        <v-container fill-height></v-container> <!-- fills remaining horizontal space, if necessary -->
+
+        <v-footer padless>
+            <v-container fluid>
+                <div class="pt-0 text-center">
+                    &copy; {{ new Date().getFullYear() }} <em>KIK-IRPA</em>
+                </div>
+            </v-container>
+        </v-footer>
+
+    </v-app>
+
+    
+    <script type="text/javascript">
+        const formOptions =  { 
+            "locale": "en-gb", 
+            "editMode": "inline",
+            "textareaProps": {
+                "filled": true,
+                "auto-grow": true,
+            },
+            "timePickerProps": {
+                "format": "24hr"
+            }
+        }
+
+        Vue.component('VJsf', VJsf.default)
+
+        new Vue({
+            el: '#app',
+
+            vuetify: new Vuetify({
+                theme: {
+                    themes: {
+                        light: {
+                            primary: '#af8d55'
+                        },
+                    },
+                },
+            }),
+
+            data: {
+                data: {},
+                schema: {},
+                form,
+                isValid,
+                options,
+                tab,
+            },
+
+            methods: {
+                
+            }
+        })
+    </script>
+
+</body>
+</html>
