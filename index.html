@@ -79,13 +79,35 @@
                     <h2>Code</h2><br/>
                     <p><a href="https://github.com/KIKIRPA/form-generator">github.com/KIKIRPA/form-generator</a></p>
                 </v-card-text>
+
                 <v-card-text v-if="tab === 1">
+                    <br/>
+                    <h2>Load an existing JSON schema</h2><br/>
+                    <div class="d-flex">
+                        <v-autocomplete
+                            class="mr-4"
+                            v-model="schemaPath"
+                            :items="schemaList"
+                            clearable
+                            @change="getSchema"></v-autocomplete>
+                        <v-btn
+                            plain
+                            x-large
+                            color="primary"
+                            @click="getSchemaList">
+                            <v-icon left>mdi-refresh</v-icon>
+                            refresh
+                        </v-btn>
+                    </div>
+                    <br/>
+                    <h2>JSON schema editor</h2><br/>
                     <v-jsoneditor 
                         ref="editor" 
                         v-model="schema" 
                         height="50rem"
                         @error="onError"></v-jsoneditor>
                 </v-card-text>
+
                 <v-card-text v-if="tab === 2">
                     <v-form ref="form" v-model="isValid">
                         <v-jsf 
@@ -94,6 +116,7 @@
                             :options="options"></v-jsf>
                     </v-form>
                 </v-card-text>
+
                 <v-card-text v-if="tab === 3">
                     <v-jsoneditor 
                         ref="editor" 
@@ -119,6 +142,18 @@
 
     
     <script type="text/javascript">
+        /*
+            GLOBAL SCRIPT PARAMETERS
+
+            repo: github repository where to search json schemas; format "owner/repo"
+            branch: git branch
+            schemaExtension: search for files with a specific file extension
+        */
+        const repo = 'E-RIHS/hs-interoperability'
+        const branch = 'main'
+        const extension = '.schema.json'
+
+
         const formOptions =  { 
             "locale": "en-gb", 
             "editMode": "inline",
@@ -153,9 +188,45 @@
                 isValid: null,
                 options: null,
                 tab: null,
+                schemaList: [],
+                schemaPath: null,
+            },
+
+            mounted() {
+                this.getSchemaList()
             },
 
             methods: {
+                getSchemaList() {
+                    let url = 'https://api.github.com/repos/' + repo + '/git/trees/' + branch + '?recursive=1'
+                    axios.get(url)
+                        .then(response => {
+                            for (file of response.data.tree) {
+                                if (file.type === 'blob' 
+                                    && file.path.endsWith(extension)
+                                ) {
+                                    this.schemaList.push(file.path)
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                },
+
+                getSchema() {
+                    if (this.schemaPath !== null) {
+                        let url = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/' + this.schemaPath
+                        axios.get(url)
+                            .then(response => {
+                                this.schema = response.data
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                    }
+                },
+
                 onError(err){
                     console.log(err)
                 },
