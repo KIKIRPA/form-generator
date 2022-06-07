@@ -67,15 +67,23 @@
                     </p>
                     <p>
                         No data is sent to the server. Both the schema and the instance are living locally in your browser.
-                    </p>
-                    <p>
-                        TO DO: VJSF has very basic validation. An external JSON schema validator library can be used instead.
                     </p><br/>
+                    <h2>Options</h2>
+                    <v-switch
+                        v-model="options.useValidator"
+                        label="Use external library to validate the form"
+                        color="primary"></v-switch>
+                    <small>
+                        VJSF has basic validation built-in, but this does not support more complex types of form validation, e.g. if/then/else syntax or anyOf syntax.
+                        When a more thorough validation of the form data is required, an external JSON schema validator such as <a href="https://github.com/ajv-validator/ajv">AJV</a> can be used.
+                        The messages will often be less intuitive than when they are created by vjsf itself based on simple rules, but this mechanism can help prevent outputting invalid data.
+                    </small>
+                    <br/><br/><br/>
                     <h2>Credits</h2><br/>
                     <ul>
                         <li><a href="https://github.com/koumoul-dev/vuetify-jsonschema-form">VJSF</a> by Alban Mouton</li>
                         <li><a href="https://github.com/yansenlei/VJsoneditor">v-jsoneditor</a> by yansenlei</li>
-                    </ul><br/>
+                    </ul><br/><br/>
                     <h2>Code</h2><br/>
                     <p><a href="https://github.com/KIKIRPA/form-generator">github.com/KIKIRPA/form-generator</a></p>
                 </v-card-text>
@@ -109,6 +117,9 @@
                 </v-card-text>
 
                 <v-card-text v-if="tab === 2">
+                    <br />
+                    <h2 v-if="schema.title" v-text="schema.title"></h2>
+                    <br />
                     <v-form ref="form" v-model="isValid">
                         <v-jsf 
                             v-model="data"
@@ -154,8 +165,9 @@
         const extension = '.schema.json'
 
 
-        const formOptions =  { 
+        let formOptions =  { 
             "locale": "en-gb", 
+            "rootDisplay": "",
             "editMode": "inline",
             "textareaProps": {
                 "filled": true,
@@ -163,7 +175,8 @@
             },
             "timePickerProps": {
                 "format": "24hr"
-            }
+            },
+            "useValidator": true,
         }
 
         Vue.component('VJsf', VJsf.default)
@@ -186,10 +199,10 @@
                 schema: {},
                 form: null,
                 isValid: null,
-                options: null,
+                options: formOptions,
                 tab: null,
                 schemaList: [],
-                schemaPath: null,
+                schemaPath: null
             },
 
             mounted() {
