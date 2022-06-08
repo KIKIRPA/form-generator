@@ -55,8 +55,11 @@
                     <br/>
                     <h2>JSON Schema Form Generator</h2><br/>
                     <p>
-                        This tool generates nice webforms based on a <a href="https://json-schema.org/">JSON schema</a>. 
-                        Internally, it uses <a href="https://github.com/koumoul-dev/vuetify-jsonschema-form">VJSF</a>, a component for Vue.js and Vuetify.
+                        This tool is built specifically as an aid for writing <a href="https://json-schema.org/">JSON schemas</a> for describing metadata and paradata of heritage science datasets. JSON schemas define the precise format in which the meta- and paradata will be stored in the form of JSON, which is particularly useful for the diverse nature of datasets in heritage science. 
+                        
+                    </p>
+                    <p>
+                        Internally, it uses <a href="https://koumoul-dev.github.io/vuetify-jsonschema-form/latest/">VJSF</a>, a component for Vue.js and Vuetify.
                         Besides standard JSON schema, VJSF supports a few additional properties, mainly for rendering purposes.
                     </p>
                     <p>
@@ -129,9 +132,7 @@
                     <ul>
                         <li><a href="https://github.com/koumoul-dev/vuetify-jsonschema-form">VJSF</a> by Alban Mouton</li>
                         <li><a href="https://github.com/yansenlei/VJsoneditor">v-jsoneditor</a> by yansenlei</li>
-                    </ul><br/><br/>
-                    <h2>Code</h2><br/>
-                    <p><a href="https://github.com/KIKIRPA/form-generator">github.com/KIKIRPA/form-generator</a></p>
+                    </ul>
                 </v-card-text>
 
                 <v-card-text v-if="tab === 1">
@@ -187,11 +188,61 @@
 
         <v-container fill-height></v-container> <!-- fills remaining horizontal space, if necessary -->
 
-        <v-footer padless>
-            <v-container fluid>
-                <div class="pt-0 text-center">
-                    &copy; {{ new Date().getFullYear() }} <em>KIK-IRPA</em>
-                </div>
+        <v-footer padless class="text-caption">
+            <v-container >
+                <v-row no-gutters>
+                    <v-col cols="12" sm="4" class="pa-4">
+                        <div class="mb-6">
+                            <a href="https://www.kikirpa.be">
+                                <v-img
+                                    max-height="150"
+                                    max-width="250"
+                                    src="./img/kikirpa-logo.png"
+                                    ></v-img>
+                            </a>
+                        </div>
+                        <div class="mb-6">
+                            Developed by Wim Fremout for the Royal Institute for Cultural Heritage
+                        </div>
+                        <div class="d-flex">
+                            <a href="https://github.com/KIKIRPA/form-generator"><v-icon left>mdi-github</v-icon></a>
+                            <small>
+                                The <a href="https://github.com/KIKIRPA/form-generator">source code of JSON Schema Form Generator</a> is available on GitHub as open source under the <a href="https://github.com/KIKIRPA/form-generator/blob/master/LICENSE">MIT license</a>.
+                            </small>
+                        </div>
+                    </v-col>
+                    <v-divider vertical></v-divider>
+                    <v-col cols="12" sm="8" class="pa-4">
+                        <div class="pt-0 pb-2 text-center font-italic">
+                            This tool was developed and tested as part of the work of the following projects:
+                        </div>
+                        <v-row no-gutters>
+                            <v-col cols="12" md="6" class="pa-2">
+                                <div class="pt-0 pb-2">
+                                    <a href="http://hescida.kikirpa.be/" rel="nofollow">
+                                        <v-img src="./img/hescida-logo.png" alt="HESCIDA" height="80" contain></v-img>
+                                    </a>
+                                </div>
+                                <div class="d-flex justify-center">
+                                    <v-img max-height="40" max-width="48" src="./img/belspo-logo.png" class="mr-2"></v-img>
+                                    <v-img max-height="40" max-width="54" src="./img/be-logo.png" class="mr-2"></v-img>
+                                    <small>HESCIDA is a project funded by the Belgian Science Policy PPS<br/>Grant number FSIRI/00/HE1</small>
+                                </div>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <div class="pt-0 pb-2 pt-md-4">
+                                    <a href="https://www.iperionhs.eu/" rel="nofollow">
+                                        <v-img src="./img/iphs-logo.png" alt="IPERION-HS" height="80" contain></v-img>
+                                    </a>
+                                </div>
+                                <div class="d-flex justify-center">
+                                    <v-img max-height="40" max-width="60" src="./img/eu-logo.png" class="mr-2"></v-img>
+                                    <small>IPERION HS is a project funded by the European Union<br/>H2020-INFRAIA-2019-1, under GA 871034</small>
+                                </div>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                </v-row>
             </v-container>
         </v-footer>
 
