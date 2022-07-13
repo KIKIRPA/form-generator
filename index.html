@@ -330,6 +330,8 @@
                         axios.get(url)
                             .then(response => {
                                 this.schema = response.data
+                                let directUrl = window.location.href.split('?')[0] + "?path=" + encodeURIComponent(this.schemaPath)
+                                console.log(directUrl)
                             })
                             .catch(error => {
                                 console.log(error)
