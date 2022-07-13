@@ -299,14 +299,25 @@
                 options: formOptions,
                 tab: null,
                 schemaList: [],
-                schemaPath: null
+                schemaPath: null,
+                queryParams: {},
             },
 
             mounted() {
+                this.getQueryParams()
                 this.getSchemaList()
             },
 
             methods: {
+                getQueryParams() {
+                    let query = window.location.search.substring(1)
+                    let vars = query.split("&");
+                    for (let i = 0; i < vars.length; i++) {
+                        let pair = vars[i].split("=")
+                        this.queryParams[pair[0]] = decodeURIComponent(pair[1])
+                    }
+                },
+
                 getSchemaList() {
                     let url = 'https://api.github.com/repos/' + repo + '/git/trees/' + branch + '?recursive=1'
                     axios.get(url)
@@ -316,6 +327,16 @@
                                     && file.path.endsWith(extension)
                                 ) {
                                     this.schemaList.push(file.path)
+                                }
+                            }
+                            // if the URL contains a "path" parameter, try to prefetch this schema
+                            if ('path' in this.queryParams) {
+                                if (this.schemaList.includes(this.queryParams.path)) {
+                                    this.schemaPath = this.queryParams.path
+                                    this.getSchema()
+                                    this.tab = 2
+                                } else {
+                                    console.error('"' + this.queryParams.path + '" was not found on github')
                                 }
                             }
                         })
@@ -331,7 +352,7 @@
                             .then(response => {
                                 this.schema = response.data
                                 let directUrl = window.location.href.split('?')[0] + "?path=" + encodeURIComponent(this.schemaPath)
-                                console.log(directUrl)
+                                console.log("The following URL will prefetch the JSON schema from github: " + directUrl)
                             })
                             .catch(error => {
                                 console.log(error)
