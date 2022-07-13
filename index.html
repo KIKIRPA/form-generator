@@ -301,6 +301,15 @@
                 schemaList: [],
                 schemaPath: null,
                 queryParams: {},
+                shareableUrl: ""
+            },
+            
+            watch: {
+                schema: function (val) {
+                    let encodedSchema = encodeURIComponent(JSON.stringify(val))
+                    this.shareableUrl = window.location.href.split('?')[0] + "?schema=" + encodedSchema
+                    window.history.pushState({}, "", this.shareableUrl);
+                }
             },
 
             mounted() {
@@ -315,6 +324,12 @@
                     for (let i = 0; i < vars.length; i++) {
                         let pair = vars[i].split("=")
                         this.queryParams[pair[0]] = decodeURIComponent(pair[1])
+                    }
+
+                    // if the URL contains a "schema" parameter, prefill this schema
+                    if ('schema' in this.queryParams) {
+                        this.schema = JSON.parse(this.queryParams.schema)
+                        this.tab = 1
                     }
                 },
 
@@ -334,7 +349,7 @@
                                 if (this.schemaList.includes(this.queryParams.path)) {
                                     this.schemaPath = this.queryParams.path
                                     this.getSchema()
-                                    this.tab = 2
+                                    this.tab = 1
                                 } else {
                                     console.error('"' + this.queryParams.path + '" was not found on github')
                                 }
