@@ -189,6 +189,16 @@
                 </v-card-text>
 
                 <v-card-text v-if="tab === 3">
+                    <div class="d-flex">
+                        <v-spacer></v-spacer>
+                        <v-btn plain
+                            x-large
+                            color="primary"
+                            @click="saveInstance">
+                            <v-icon left>mdi-download</v-icon>
+                            Download
+                        </v-btn>
+                    </div>
                     <v-jsoneditor 
                         ref="editor" 
                         v-model="data" 
@@ -401,6 +411,19 @@
                     let text = JSON.stringify(this.schema)
                     let filename = (this.schema.title !== undefined) ? this.schema.title : Date.now()
                     filename += extension
+                    let element = document.createElement('a')
+                    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text))
+                    element.setAttribute('download', filename)
+                    element.style.display = 'none'
+                    document.body.appendChild(element)
+                    element.click()
+                    document.body.removeChild(element);    
+                },
+
+                saveInstance() {
+                    let text = JSON.stringify(this.data)
+                    let filename = (this.data.id !== undefined) ? this.data.id : Date.now()
+                    filename += '.json'
                     let element = document.createElement('a')
                     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text))
                     element.setAttribute('download', filename)
