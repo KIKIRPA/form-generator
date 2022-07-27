@@ -154,11 +154,21 @@
                             color="primary"
                             @click="getSchemaList">
                             <v-icon left>mdi-refresh</v-icon>
-                            refresh
+                            Refresh
                         </v-btn>
                     </div>
                     <br/>
-                    <h2>JSON schema editor</h2><br/>
+                    <div class="d-flex">
+                        <h2>JSON schema editor</h2>
+                        <v-spacer></v-spacer>
+                        <v-btn plain
+                            x-large
+                            color="primary"
+                            @click="saveSchema">
+                            <v-icon left>mdi-download</v-icon>
+                            Download
+                        </v-btn>
+                    </div>
                     <v-jsoneditor 
                         ref="editor" 
                         v-model="schema" 
@@ -385,6 +395,19 @@
                                 console.log(error)
                             })
                     }
+                },
+
+                saveSchema() {
+                    let text = JSON.stringify(this.schema)
+                    let filename = (this.schema.title !== undefined) ? this.schema.title : Date.now()
+                    filename += extension
+                    let element = document.createElement('a')
+                    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text))
+                    element.setAttribute('download', filename)
+                    element.style.display = 'none'
+                    document.body.appendChild(element)
+                    element.click()
+                    document.body.removeChild(element);    
                 },
 
                 onError(err){
