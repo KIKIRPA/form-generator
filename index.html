@@ -276,11 +276,11 @@
         /*
             GLOBAL SCRIPT PARAMETERS
 
-            repo: github repository where to search json schemas; format "owner/repo"
+            defaultRepo: github repository where to search json schemas; format "owner/repo"
             defaultBranch: default git branch
             schemaExtension: search for files with a specific file extension
         */
-        const repo = 'E-RIHS/hs-interoperability'
+        const defaultRepo = 'E-RIHS/schema'
         const defaultBranch = 'main'
         const extension = '.schema.json'
 
@@ -324,8 +324,10 @@
                 schemaList: [],
                 schemaPath: null,
                 queryParams: {},
+                url: null,
                 shareableUrl: "",
                 branch: defaultBranch,
+                repo: defaultRepo,
             },
             
             watch: {
@@ -350,12 +352,20 @@
                         this.queryParams[pair[0]] = decodeURIComponent(pair[1])
                     }
                     
-                    // check if the URL contains a "branch" parameter
+                    // check if the URL contains a "repo" parameter
+                    if ('repo' in this.queryParams) {
+                        this.repo = this.queryParams.repo
+                    }
+
                     if ('branch' in this.queryParams) {
                         this.branch = this.queryParams.branch
                     }
 
-                    // if the URL contains a "schema" parameter, prefill this schema
+                    if ('url' in this.queryParams) {
+                        this.url = this.queryParams.url
+                        this.getSchema()
+                    }
+
                     if ('schema' in this.queryParams) {
                         this.schema = JSON.parse(this.queryParams.schema)
                         this.tab = 1
@@ -363,7 +373,7 @@
                 },
 
                 getSchemaList() {
-                    let url = 'https://api.github.com/repos/' + repo + '/git/trees/' + this.branch + '?recursive=1'
+                    let url = 'https://api.github.com/repos/' + this.repo + '/git/trees/' + this.branch + '?recursive=1'
                     axios.get(url)
                         .then(response => {
                             for (file of response.data.tree) {
@@ -390,21 +400,25 @@
                 },
 
                 getSchema() {
-                    if (this.schemaPath !== null) {
-                        let url = 'https://raw.githubusercontent.com/' + repo + '/' + this.branch + '/' + this.schemaPath
-                        axios.get(url)
-                            .then(response => {
-                                this.schema = response.data
-                                let directUrl = window.location.href.split('?')[0] + "?path=" + encodeURIComponent(this.schemaPath)
-                                if (this.branch !== defaultBranch) {
-                                    directUrl += "&branch=" + encodeURIComponent(this.branch)
-                                }
-                                console.log("The following URL will prefetch the JSON schema from github: " + directUrl)
-                            })
-                            .catch(error => {
-                                console.log(error)
-                            })
+                    let url = null
+
+                    if (this.url !== null) {
+                        url = this.url
+                    } else if (this.schemaPath !== null) {
+                        url = 'https://raw.githubusercontent.com/' + this.repo + '/' + this.branch + '/' + this.schemaPath
+                    } else {
+                        return null
                     }
+
+                    axios.get(url)
+                        .then(response => {
+                            this.schema = response.data
+                            let directUrl = window.location.href.split('?')[0] + "?url=" + encodeURIComponent(url)
+                            console.log("The following URL will prefetch the JSON schema from github: " + directUrl)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
                 },
 
                 saveSchema() {
