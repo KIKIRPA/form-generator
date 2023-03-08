@@ -44,7 +44,11 @@
         <v-container>
             <v-card class="mt-6">
                 <v-card-title>
-                    <v-tabs v-model="tab" grow>
+                    <v-tabs 
+                        v-model="tab" 
+                        v-if="!dataEntry"
+                        grow
+                    >
                         <v-tab><v-icon>mdi-information-outline</v-icon></v-tab>
                         <v-tab>Schema</v-tab>
                         <v-tab>Form</v-tab>
@@ -186,6 +190,16 @@
                             :schema="schema" 
                             :options="options"></v-jsf>
                     </v-form>
+                    <div class="d-flex">
+                        <v-spacer></v-spacer>
+                        <v-btn plain
+                            x-large
+                            color="primary"
+                            @click="saveInstance">
+                            <v-icon left>mdi-download</v-icon>
+                            Save form data
+                        </v-btn>
+                    </div>
                 </v-card-text>
 
                 <v-card-text v-if="tab === 3">
@@ -196,7 +210,7 @@
                             color="primary"
                             @click="saveInstance">
                             <v-icon left>mdi-download</v-icon>
-                            Download
+                            Save form data
                         </v-btn>
                     </div>
                     <v-jsoneditor 
@@ -328,12 +342,16 @@
                 shareableUrl: "",
                 branch: defaultBranch,
                 repo: defaultRepo,
+                dataEntry: false,
             },
             
             watch: {
                 schema: function (val) {
                     let encodedSchema = encodeURIComponent(JSON.stringify(val))
                     this.shareableUrl = window.location.href.split('?')[0] + "?schema=" + encodedSchema
+                    if (this.dataEntry) {
+                        this.shareableUrl += "&data_entry"
+                    }
                     window.history.pushState({}, "", this.shareableUrl);
                 }
             },
@@ -369,6 +387,11 @@
                     if ('schema' in this.queryParams) {
                         this.schema = JSON.parse(this.queryParams.schema)
                         this.tab = 1
+                    }
+
+                    if ('data_entry' in this.queryParams) {
+                        this.dataEntry = true
+                        this.tab = 2
                     }
                 },
 
@@ -414,6 +437,9 @@
                         .then(response => {
                             this.schema = response.data
                             let directUrl = window.location.href.split('?')[0] + "?url=" + encodeURIComponent(url)
+                            if (this.dataEntry) {
+                                directUrl += "&data_entry"
+                            }
                             console.log("The following URL will prefetch the JSON schema from github: " + directUrl)
                         })
                         .catch(error => {
@@ -422,7 +448,7 @@
                 },
 
                 saveSchema() {
-                    let text = JSON.stringify(this.schema)
+                    let text = JSON.stringify(this.schema, null, "    ")
                     let filename = (this.schema.title !== undefined) ? this.schema.title : Date.now()
                     filename += extension
                     let element = document.createElement('a')
@@ -435,7 +461,7 @@
                 },
 
                 saveInstance() {
-                    let text = JSON.stringify(this.data)
+                    let text = JSON.stringify(this.data, null, "    ")
                     let filename = (this.data.id !== undefined) ? this.data.id : Date.now()
                     filename += '.json'
                     let element = document.createElement('a')
