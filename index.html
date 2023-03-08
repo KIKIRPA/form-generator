@@ -21,6 +21,9 @@
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    
     <script src="./dist/v-jsoneditor.min.js"></script>
 </head>
 
@@ -38,9 +41,13 @@
             <v-spacer></v-spacer>
             <v-toolbar-title>JSON Schema Form Generator</v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-btn plain @click="buildShareableUrl()" target="_blank">
+                <v-icon left>mdi-share-variant</v-icon>
+                Share
+            </v-btn>
             <v-btn plain href="https://github.com/KIKIRPA/form-generator" target="_blank">
+                <v-icon left>mdi-github</v-icon>
                 Code on GitHub
-                <v-icon right>mdi-github</v-icon>
             </v-btn>
         </v-app-bar>
 
@@ -50,8 +57,7 @@
                     <v-tabs 
                         v-model="tab" 
                         v-if="!dataEntry"
-                        grow
-                    >
+                        grow>
                         <v-tab><v-icon>mdi-information-outline</v-icon></v-tab>
                         <v-tab>Schema</v-tab>
                         <v-tab>Form</v-tab>
@@ -186,6 +192,16 @@
                 <v-card-text v-if="tab === 2">
                     <br />
                     <h2 v-if="schema.title" v-text="schema.title"></h2>
+                    <div class="d-flex">
+                        <v-spacer></v-spacer>
+                        <v-btn plain
+                            x-large
+                            color="primary"
+                            @click="saveInstance">
+                            <v-icon left>mdi-download</v-icon>
+                            Save form data
+                        </v-btn>
+                    </div>                    
                     <br />
                     <v-form ref="form" v-model="isValid">
                         <v-jsf 
@@ -226,6 +242,37 @@
             </v-card>
         </v-container>
 
+        <v-dialog
+            v-model="shareDialog"
+            max-width="450">
+            <v-card>
+                <v-card-title class="text-h5">
+                    Shareable link
+                </v-card-title>
+                <v-card-text>
+                    <v-text-field v-model="shareableUrl">
+                        <template #append>
+                            <v-btn
+                                color="primary"
+                                text
+                                @click="copyShareableUrl()">
+                                <v-icon>mdi-content-copy</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-text-field>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="primary"
+                        text
+                        @click="shareDialog = false">
+                        Close
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
         <v-container fill-height></v-container> <!-- fills remaining horizontal space, if necessary -->
 
         <v-footer padless class="text-caption">
@@ -238,7 +285,8 @@
                                     max-height="150"
                                     max-width="250"
                                     src="./img/kikirpa-logo.png"
-                                    ></v-img>
+                                    >
+                                </v-img>
                             </a>
                         </div>
                         <div class="mb-6">
@@ -343,20 +391,12 @@
                 queryParams: {},
                 url: null,
                 shareableUrl: "",
+                shareDialog: false,
+                compressedSchema: null,
+                compressedData: null,
                 branch: defaultBranch,
                 repo: defaultRepo,
                 dataEntry: false,
-            },
-            
-            watch: {
-                schema: function (val) {
-                    let encodedSchema = encodeURIComponent(JSON.stringify(val))
-                    this.shareableUrl = window.location.href.split('?')[0] + "?schema=" + encodedSchema
-                    if (this.dataEntry) {
-                        this.shareableUrl += "&data_entry"
-                    }
-                    window.history.pushState({}, "", this.shareableUrl);
-                }
             },
 
             mounted() {
@@ -373,22 +413,32 @@
                         this.queryParams[pair[0]] = decodeURIComponent(pair[1])
                     }
                     
-                    // check if the URL contains a "repo" parameter
+                    // fetch repo and branch from parameters
                     if ('repo' in this.queryParams) {
                         this.repo = this.queryParams.repo
                     }
-
                     if ('branch' in this.queryParams) {
                         this.branch = this.queryParams.branch
                     }
 
+                    // fetch schema and data from parameters
                     if ('url' in this.queryParams) {
                         this.url = this.queryParams.url
                         this.getSchema()
-                    }
-
-                    if ('schema' in this.queryParams) {
-                        this.schema = JSON.parse(this.queryParams.schema)
+                    } else if ('s' in this.queryParams) {
+                        const schema = pako.inflate(
+                            Base64.toUint8Array(this.queryParams.s), 
+                            { to: 'string' }
+                        )
+                        this.schema = JSON.parse(schema)
+                        if ('d' in this.queryParams) {
+                            const data = pako.inflate(
+                                Base64.toUint8Array(this.queryParams.d), 
+                                { to: 'string' }
+                            )
+                            this.data = JSON.parse(data)
+                        }
+                        window.history.pushState({}, "", window.location.href.split('?')[0])
                         this.tab = 1
                     }
 
@@ -474,6 +524,32 @@
                     document.body.appendChild(element)
                     element.click()
                     document.body.removeChild(element);    
+                },
+
+                buildShareableUrl() {
+                    shareableUrl = window.location.href.split('?')[0]
+                    
+                    const compressedSchema = Base64.fromUint8Array(
+                        pako.deflate(JSON.stringify(this.schema), { level: 9 }), 
+                        true
+                    )
+                    shareableUrl += "?s=" + compressedSchema
+                    
+                    const compressedData = Base64.fromUint8Array(
+                        pako.deflate(JSON.stringify(this.data), { level: 9 }), 
+                        true
+                    )
+                    shareableUrl += "&d=" + compressedData
+
+                    if (this.dataEntry) {
+                        shareableUrl += "&data_entry"
+                    }
+                    this.shareableUrl = shareableUrl
+                    this.shareDialog = true
+                },
+
+                copyShareableUrl() {
+                    navigator.clipboard.writeText(this.shareableUrl)
                 },
 
                 onError(err){
