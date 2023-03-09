@@ -9,7 +9,7 @@ It implements:
 
 All components are reactive: changes in the JSON Schema are directly rendered in the web form, while filled-in values in the form are directly added to the instance (and vice-versa).
 
-The Form Generator is deployed here: https://bytes.kikirpa.be/json-schema-form
+The Form Generator is deployed here: https://bytes.kikirpa.be/form-generator
 
 ## Path parameters
 
@@ -24,7 +24,7 @@ The _branch_ parameter is the name of a specific branch, a commit number or a ta
 Example: the example below will list the JSON Schemas found in https://github.com/E-RIHS/hs-interoperability
 
 ```
-https://bytes.kikirpa.be/json-schema-form/?repo=E-RIHS/hs-interoperability
+https://bytes.kikirpa.be/form-generator/?repo=E-RIHS/hs-interoperability
 ```
 
 ### The _url_ parameter
@@ -35,7 +35,7 @@ Note: this works independantly from the _repo_ and _branch_ parameters.
 Example: the example below will pre-load https://e-rihs.io/schema/service-v0.4.schema.json
 
 ```
-https://bytes.kikirpa.be/json-schema-form/?url=https://e-rihs.io/schema/service-v0.4.schema.json
+https://bytes.kikirpa.be/form-generator/?url=https://e-rihs.io/schema/service-v0.4.schema.json
 ```
 
 ### The _s_ and _d_ parameters
@@ -51,5 +51,5 @@ While the Form Generator tool is principally created to facilitate the developme
 Example: the example below will pre-load https://e-rihs.io/schema/service-v0.4.schema.json, and only the form will be displayed.
 
 ```
-https://bytes.kikirpa.be/json-schema-form/?url=https://e-rihs.io/schema/service-v0.4.schema.json&data_entry
+https://bytes.kikirpa.be/form-generator/?url=https://e-rihs.io/schema/service-v0.4.schema.json&data_entry
 ```
