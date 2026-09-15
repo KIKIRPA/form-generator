@@ -196,7 +196,7 @@ onMounted(() => {
 
     <footer class="app-footer">
       <div class="footer-grid">
-        <div>
+        <div class="footer-col">
           <div class="footer-logo">
             <a href="https://www.kikirpa.be">
               <img :src="`${assetBase}img/kikirpa-logo.png`" alt="KIKIRPA" />
@@ -213,7 +213,9 @@ onMounted(() => {
           </p>
         </div>
 
-        <div>
+        <div class="footer-divider" aria-hidden="true"></div>
+
+        <div class="footer-col footer-col-projects">
           <p class="text-center italic mb-2">
             This tool was developed and tested as part of the work of the following projects:
           </p>

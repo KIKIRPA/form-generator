@@ -100,7 +100,7 @@ body {
 .app-footer {
   border-top: 1px solid var(--p-surface-200);
   background: var(--p-surface-0);
-  padding: 0.85rem 1rem;
+  padding: 0.85rem 1.5rem;
   font-size: 0.7rem;
   line-height: 1.4;
   color: var(--p-text-muted-color, var(--p-surface-600));
@@ -116,16 +116,26 @@ body {
 
 .footer-grid {
   display: grid;
-  gap: 1rem;
-  max-width: 56rem;
-  margin: 0 auto;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.footer-divider {
+  height: 1px;
+  background: var(--p-surface-200);
 }
 
 @media (min-width: 768px) {
   .footer-grid {
-    grid-template-columns: 1fr 1.6fr;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 2fr);
     gap: 1.5rem;
-    align-items: start;
+    align-items: stretch;
+  }
+
+  .footer-divider {
+    width: 1px;
+    height: auto;
+    align-self: stretch;
   }
 }
 
