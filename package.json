@@ -1,0 +1,27 @@
+{
+  "name": "form-generator",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@jsonforms/core": "^3.6.0",
+    "@jsonforms/vue": "^3.6.0",
+    "@kobbejager/jsonforms-primevue": "0.9.0",
+    "@primeuix/themes": "^1.2.5",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.4.1",
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "tailwindcss": "^4.1.14",
+    "tailwindcss-primeui": "^0.6.1",
+    "vite": "^7.1.10"
+  }
+}

@@ -1,0 +1,553 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.kikirpa.be/3DScanning/v0.1",
+  "$tags": ["DataAcquisitionType"],
+  "$dir": "3dscanning",
+  "title": "3DScanning",
+  "type": "object",
+  "required": ["acquisitionCode"],
+  "properties": {
+    "acquisitionCode": {
+      "title": "Acquisition code",
+      "description": "An (ideally unique) identifier that describes the data acquisition",
+      "type": "string"
+    },
+    "object": {
+      "title": "Studied object",
+      "description": "The heritage object, sample or reference material that the data acquisition is related to",
+      "type": "string"
+    },
+    "abstracts": {
+      "title": "Abstracts",
+      "description": "Descriptions of the data acquisition and its context and purpose, or the collection and processing methodology (including sample preparation steps)",
+      "type": "object",
+      "properties": {
+        "abstractEN": {
+          "title": "Abstract (English)",
+          "type": "string",
+          "format": "textarea"
+        },
+        "abstractNL": {
+          "title": "Abstract (Dutch)",
+          "type": "string",
+          "format": "textarea"
+        },
+        "abstractFR": {
+          "title": "Abstract (French)",
+          "type": "string",
+          "format": "textarea"
+        }
+      }
+    },
+    "creators": {
+      "title": "Creators",
+      "description": "The persons/organisations responsible for this record.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "title": "Creator",
+        "type": "object",
+        "properties": {
+          "givenName": {
+            "title": "First name",
+            "description": "First name of the person",
+            "type": "string"
+          },
+          "familyName": {
+            "title": "Last name",
+            "description": "Last name of the person",
+            "type": "string"
+          },
+          "orcid": {
+            "title": "ORCID",
+            "description": "The ORCID of the person (Open Researcher and Contributor ID)",
+            "type": "string",
+            "format": "uri"
+          },
+          "isni": {
+            "title": "ISNI",
+            "description": "The ISNI of the person or organisation (International Standard Name Identifier)",
+            "type": "string",
+            "format": "uri"
+          },
+          "affiliations": {
+            "title": "Affiliations",
+            "description": "The organisations the team member is affiliated with",
+            "type": "array",
+            "items": {
+              "title": "Affiliation",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "title": "Affiliation name",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "ror": {
+                  "title": "ROR",
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dates": {
+      "title": "Dates",
+      "description": "Important dates related to the data acquisition",
+      "type": "object",
+      "properties": {
+        "created": {
+          "title": "Created",
+          "description": "The date when the data was created",
+          "type": "string",
+          "format": "date"
+        },
+        "updated": {
+          "title": "Updated",
+          "description": "The date when the data was last updated",
+          "type": "string",
+          "format": "date"
+        },
+        "withdrawn": {
+          "title": "Withdrawn",
+          "description": "The date when the data was withdrawn",
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "instruments": {
+      "title": "Instruments",
+      "description": "The instrument that was used to make the measurement",
+      "type": "array",
+      "items": {
+        "title": "Instrument",
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "manufacturer": {
+            "title": "Manufacturer",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "roles": {
+            "title": "Roles",
+            "description": "The role of the instrument in the process",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "title": "Role",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "software": {
+      "title": "Software",
+      "description": "The software that was used to make the measurement",
+      "type": "array",
+      "items": {
+        "title": "Software",
+        "type": "object",
+        "required": ["software"],
+        "properties": {
+          "software": {
+            "title": "Software",
+            "description": "The description of the software used",
+            "type": "string",
+            "cordra": {
+              "type": {
+                "handleReference": {
+                  "types": ["Software"]
+                }
+              }
+            }
+          },
+          "roles": {
+            "title": "Roles",
+            "description": "The role of the software in the process",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "title": "Role",
+              "type": "string",
+              "enum": [
+                "Acquisition",
+                "Processing",
+                "Interpretation",
+                "Analysis",
+                "Visualization",
+                "Other"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "relatedIdentifiers": {
+      "title": "Related identifiers",
+      "description": "External references to related resources",
+      "type": "array",
+      "items": {
+        "title": "Related identifier",
+        "type": "object",
+        "required": [
+          "relatedIdentifier",
+          "relatedIdentifierType",
+          "relationType"
+        ],
+        "properties": {
+          "relatedIdentifier": {
+            "title": "Identifier",
+            "description": "The identifier or URL of the related resource",
+            "type": "string"
+          },
+          "relatedIdentifierType": {
+            "title": "Related identifier type",
+            "type": "string",
+            "cordra": {
+              "type": {
+                "handleReference": {
+                  "types": ["VocabularyConcept"],
+                  "filters": ["/queryTerms/_=\"RELATED_ID\""]
+                }
+              }
+            }
+          },
+          "relationType": {
+            "title": "Relation type",
+            "type": "string",
+            "cordra": {
+              "type": {
+                "handleReference": {
+                  "types": ["VocabularyConcept"],
+                  "filters": ["/queryTerms/_=\"RELATION_TYPE\""]
+                }
+              }
+            }
+          },
+          "relationTypeInformation": {
+            "title": "Relation type information",
+            "description": "Additional detail about the relation type (especially when Other)",
+            "type": "string"
+          },
+          "caption": {
+            "title": "Description / citation",
+            "description": "Short textual description or citation string for UI display",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "alternateIdentifiers": {
+      "title": "Alternate identifiers",
+      "description": "Identifiers other than the primary identifier pertaining to the same resource",
+      "type": "array",
+      "items": {
+        "title": "Alternate identifier",
+        "type": "object",
+        "required": ["alternateIdentifier", "alternateIdentifierType"],
+        "properties": {
+          "alternateIdentifier": {
+            "title": "Alternate identifier",
+            "type": "string"
+          },
+          "alternateIdentifierType": {
+            "title": "Alternate identifier type",
+            "type": "string",
+            "cordra": {
+              "type": {
+                "handleReference": {
+                  "types": ["VocabularyConcept"],
+                  "filters": ["/queryTerms/_=\"ALTERNATE_ID\""]
+                }
+              }
+            }
+          },
+          "caption": {
+            "title": "Description / citation",
+            "description": "Short textual description or citation string for UI display",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "title": "Parameters",
+      "description": "The parameters of the data acquisition",
+      "type": "object",
+      "properties": {
+        "creationMethod": {
+          "title": "The methodology used to create the 3D model",
+          "type": "string",
+          "enum": [
+            "Photogrammetry",
+            "Laser scanning",
+            "Structured Light Scanning",
+            "Other / Hybrid"
+          ]
+        },
+        "finalModelType": {
+          "title": "Final 3D model type",
+          "description": "The type of the final 3D model",
+          "type": "string",
+          "enum": [
+            "Point cloud",
+            "Mesh",
+            "Textured model",
+            "Nontextured model",
+            "Photogrammetric model",
+            "Other"
+          ]
+        },
+        "lighting": {
+          "title": "Lighting conditions",
+          "description": "Lighting conditions",
+          "type": "string"
+        },
+        "scaling": {
+          "title": "Scaling/Reference Method ",
+          "type": "object",
+          "format": "grid",
+          "properties": {
+            "scalingMethod": {
+              "title": "Scaling method",
+              "type": "string",
+              "enum": [
+                "Scale bar",
+                "Total station ground control points",
+                "Other"
+              ]
+            },
+            "measurementUnits": {
+              "title": "Measurement units",
+              "description": "Measurement units",
+              "type": "string",
+              "enum": ["mm", "cm", "m", "Other"]
+            }
+          }
+        },
+        "capture": {
+          "title": "Capture details",
+          "description": "Information about the type and number of captures. ",
+          "type": "object",
+          "format": "grid",
+          "properties": {
+            "captureType": {
+              "title": "Type",
+              "description": "The element captured to create the model",
+              "type": "string",
+              "enum": ["Digital image", "Thermal image", "Scan", "Other"]
+            },
+            "captureNumber": {
+              "title": "Capture number",
+              "description": "Number of captures made (number of photos, scans)",
+              "type": "number"
+            }
+          }
+        },
+        "meshProperties": {
+          "title": "Mesh properties",
+          "type": "object",
+          "properties": {
+            "polygonCount": {
+              "title": "Polygon count",
+              "description": "Number of mesh polygons",
+              "type": "number"
+            },
+            "vertexCount": {
+              "title": "Vertex count",
+              "description": "Number of vertices",
+              "type": "number"
+            },
+            "volume": {
+              "title": "Volume",
+              "description": "Volume of the 3D model",
+              "type": "object",
+              "format": "grid",
+              "required": ["value", "unit"],
+              "properties": {
+                "value": {
+                  "title": "Value",
+                  "description": "The value of the volume",
+                  "type": "number"
+                },
+                "unit": {
+                  "title": "Unit",
+                  "description": "The unit of the volume",
+                  "type": "string",
+                  "enum": ["cm³", "m³", "other"]
+                }
+              }
+            },
+            "surfaceArea": {
+              "title": "Surface area",
+              "description": "Surface area of the 3D model",
+              "type": "object",
+              "format": "grid",
+              "required": ["value", "unit"],
+              "properties": {
+                "value": {
+                  "title": "Value",
+                  "description": "The value of the surface area",
+                  "type": "number"
+                },
+                "unit": {
+                  "title": "Unit",
+                  "description": "The unit of the surface area",
+                  "type": "string",
+                  "enum": ["cm²", "m²", "other"]
+                }
+              }
+            },
+            "texture": {
+              "title": "Texture map details",
+              "type": "string"
+            }
+          }
+        },
+        "dataProcessing": {
+          "title": "Data processing",
+          "description": "Any data processing that was used to make the measurement",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "title": "Type",
+                "description": "The type of data processing that was used",
+                "type": "string",
+                "enum": ["Alignment", "Other"]
+              },
+              "detail": {
+                "title": "Detail",
+                "description": "Any additional details about the data processing",
+                "type": "string"
+              },
+              "errorMetrics": {
+                "title": "Error metrics",
+                "description": "Error metrics",
+                "type": "string",
+                "enum": [
+                  "Global RMSE",
+                  "Mean reprojection error in pixels",
+                  "Other"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "rights": {
+      "title": "Rights",
+      "description": "The rights that apply to this record, including licenses and access conditions.",
+      "type": "object",
+      "required": ["metadata", "access"],
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": ["rightsStatement"],
+          "properties": {
+            "rightsStatement": {
+              "title": "Rights statement",
+              "description": "The copyrights that apply to the data associated with this record, including licenses and copyright waivers. It is strongly recommended to use statements from CreativeCommons.org or RightsStatements.org.",
+              "type": "string",
+              "enum": [
+                "CC0",
+                "CC-BY",
+                "CC-BY-SA",
+                "CC-BY-ND",
+                "CC-BY-NC",
+                "CC-BY-NC-SA",
+                "CC-BY-NC-ND",
+                "IN_COPYRIGHT"
+              ]
+            },
+            "rightsHolders": {
+              "title": "Rights holders",
+              "description": "The organizations that hold rights to the data associated with this record.",
+              "type": "array",
+              "items": {
+                "title": "Rights holder",
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "The name of the organization that holds rights to the data associated with this record.",
+                    "type": "string"
+                  },
+                  "uri": {
+                    "title": "URI",
+                    "description": "The URI of the organization that holds rights to the data associated with this record.",
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          },
+          "title": "Rights on the data",
+          "description": "The rights that apply to the data associated with this record."
+        },
+        "metadata": {
+          "type": "object",
+          "required": ["rightsStatement"],
+          "properties": {
+            "rightsStatement": {
+              "title": "Rights statement",
+              "description": "The copyrights that apply to the data associated with this record, including licenses and copyright waivers. It is strongly recommended to use statements from CreativeCommons.org or RightsStatements.org.",
+              "type": "string",
+              "enum": ["CC0"]
+            },
+            "rightsHolders": {
+              "title": "Rights holders",
+              "description": "The organizations that hold rights to the data associated with this record.",
+              "type": "array",
+              "items": {
+                "title": "Rights holder",
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "description": "The name of the organization that holds rights to the data associated with this record.",
+                    "type": "string"
+                  },
+                  "uri": {
+                    "title": "URI",
+                    "description": "The URI of the organization that holds rights to the data associated with this record.",
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          },
+          "title": "Rights on the metadata",
+          "description": "The rights that apply to the metadata associated with this record."
+        },
+        "access": {
+          "title": "Access to the record",
+          "description": "The access conditions that apply to the record.",
+          "type": "string",
+          "enum": ["public", "restricted", "private"]
+        }
+      }
+    }
+  }
+}
