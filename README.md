@@ -1,55 +1,57 @@
 # Form Generator
 
-This tool aims to facilitate the construction of JSON Schema for structuring (meta)data.
+This tool facilitates filling in structured metadata using JSON Schema forms.
 
 It implements:
-- a simple JSON Schema editor (based on ACE)
-- on-the-fly transformation of the schema into a web form using the VJSF library
-- a simple JSON instance editor (based on ACE)
 
-All components are reactive: changes in the JSON Schema are directly rendered in the web form, while filled-in values in the form are directly added to the instance (and vice-versa).
+- a catalog of locally stored JSON Schemas
+- on-the-fly transformation of a schema into a web form using [JSON Forms](https://jsonforms.io/) and [jsonforms-primevue](https://github.com/kobbejager/jsonforms-primevue)
+- read-only inspection of the active schema and form data
+
+All data stays in the browser. Nothing is sent to a server.
 
 The Form Generator is deployed here: https://bytes.kikirpa.be/form-generator
 
-## Path parameters
+## Development
 
-### The _repo_ and _branch_ parameters
-
-The tool offers a list of pre-selected schemas, pulled from a GitHub resource. By default, it will list the JSON Schemas from the __main__ branch of the __E-RIHS/schema__ repository.
-This behaviour can be changed by using the _repo_ and _branch_ parameters.
-
-The _repo_ parameter must consist is {user name|organisation name}/{repository name}. E.g. https://github.com/__E-RIHS/schema__
-The _branch_ parameter is the name of a specific branch, a commit number or a tag on Git
-
-Example: the example below will list the JSON Schemas found in https://github.com/E-RIHS/hs-interoperability
-
-```
-https://bytes.kikirpa.be/form-generator/index.html?repo=E-RIHS/hs-interoperability
+```bash
+yarn install
+yarn dev
 ```
 
-### The _url_ parameter
+Open http://localhost:5173
 
-It is possible to pre-load a given schema using the _url_ parameter.
-Note: this works independantly from the _repo_ and _branch_ parameters.
+## Build
 
-Example: the example below will pre-load https://e-rihs.io/schema/service-v0.4.schema.json
-
-```
-https://bytes.kikirpa.be/form-generator/index.html?url=https://e-rihs.io/schema/service-v0.4.schema.json
+```bash
+yarn build
 ```
 
-### The _s_ and _d_ parameters
+The production build is written to `dist/`. Deploy the contents of that folder to the static host under `/form-generator/`.
 
-The _s_ and _d_ parameters can be used to pre-load respectively a specific JSON schema and an instance dataset. This is particularly useful when developing an new, unsaved schema in a team or to share issues in a dataset.
-A shareable url with those _s_ and _d_ parameters will be generated when clicking on the __Share__ button in the navigation bar.
-Note: both the schema and the instance are compressed with the Pako javascript library.
+## URL parameters
 
-### The *data_entry* parameter
+### The `schema` parameter
 
-While the Form Generator tool is principally created to facilitate the development and evaluation of JSON Schemas, there might be situations where one wants to ask other people to fill in a form to simply collect the form data. In this situation, the JSON Schema editor and Instance editor might undesirable because it distracts the attention of those filling in. By adding the *data_entry* parameter, you can hide the superfluous tabs and the ability to change the schema.
-
-Example: the example below will pre-load https://e-rihs.io/schema/service-v0.4.schema.json, and only the form will be displayed.
+Pre-select a schema from the local catalog:
 
 ```
-https://bytes.kikirpa.be/form-generator/index.html?url=https://e-rihs.io/schema/service-v0.4.schema.json&data_entry
+https://bytes.kikirpa.be/form-generator/?schema=3d-scanning
 ```
+
+Available schema ids are defined in `src/schemas/index.js`.
+
+## Adding schemas
+
+1. Add `your-schema.schema.json` to `src/schemas/`
+2. Optionally add `your-schema.uischema.json` for layout and renderer options
+3. Register the schema in `src/schemas/index.js`
+
+If no UI schema is provided, one is generated automatically from the JSON Schema.
+
+## Stack
+
+- Vue 3 + Vite
+- PrimeVue 4
+- JSON Forms
+- jsonforms-primevue
