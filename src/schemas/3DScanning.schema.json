@@ -196,6 +196,205 @@
         }
       }
     },
+    "inputs": {
+      "title": "Inputs",
+      "description": "Raw data sources (photographs, laser scans, etc.) used as a basis for the 3D models",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["inputType"],
+        "properties": {
+          "inputType": {
+            "title": "Input type",
+            "description": "The type of raw data captured",
+            "type": "string",
+            "enum": [
+              "Digital photographs",
+              "Thermal image",
+              "Laser scan",
+              "Structured light scan",
+              "Other"
+            ]
+          },
+          "captureNumber": {
+            "title": "Capture number",
+            "description": "Number of captures made (number of photos, scans)",
+            "type": "number"
+          },
+          "lighting": {
+            "title": "Lighting conditions",
+            "description": "Lighting conditions during capture",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scaling": {
+      "title": "Scaling / Reference Method",
+      "type": "object",
+      "format": "grid",
+      "properties": {
+        "scalingMethod": {
+          "title": "Scaling method",
+          "type": "string",
+          "enum": [
+            "Scale bar",
+            "Total station ground control points",
+            "Other"
+          ]
+        },
+        "measurementUnits": {
+          "title": "Measurement units",
+          "description": "Measurement units",
+          "type": "string",
+          "enum": ["mm", "cm", "m", "Other"]
+        }
+      }
+    },
+    "outputs": {
+      "title": "3D Model Outputs",
+      "description": "The resulting 3D models and deliverables generated from the inputs",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["outputRole", "finalModelType"],
+        "properties": {
+          "outputRole": {
+            "title": "Output role / purpose",
+            "description": "The role of this specific model deliverable",
+            "type": "string",
+            "enum": [
+              "Archival Master",
+              "Web Access Copy",
+              "Analysis Model",
+              "Other"
+            ]
+          },
+          "creationMethod": {
+            "title": "The methodology used to create this 3D model",
+            "type": "string",
+            "enum": [
+              "Photogrammetry",
+              "Laser scanning",
+              "Structured Light Scanning",
+              "Other / Hybrid"
+            ]
+          },
+          "finalModelType": {
+            "title": "Final 3D model type",
+            "description": "The type of the final 3D model",
+            "type": "string",
+            "enum": [
+              "Point cloud",
+              "Mesh",
+              "Textured model",
+              "Nontextured model",
+              "Photogrammetric model",
+              "Other"
+            ]
+          },
+          "meshProperties": {
+            "title": "Mesh properties",
+            "type": "object",
+            "properties": {
+              "polygonCount": {
+                "title": "Polygon count",
+                "description": "Number of mesh polygons",
+                "type": "number"
+              },
+              "vertexCount": {
+                "title": "Vertex count",
+                "description": "Number of vertices",
+                "type": "number"
+              },
+              "volume": {
+                "title": "Volume",
+                "description": "Volume of the 3D model",
+                "type": "object",
+                "format": "grid",
+                "required": ["value", "unit"],
+                "properties": {
+                  "value": {
+                    "title": "Value",
+                    "description": "The value of the volume",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "The unit of the volume",
+                    "type": "string",
+                    "enum": ["cm³", "m³", "other"]
+                  }
+                }
+              },
+              "surfaceArea": {
+                "title": "Surface area",
+                "description": "Surface area of the 3D model",
+                "type": "object",
+                "format": "grid",
+                "required": ["value", "unit"],
+                "properties": {
+                  "value": {
+                    "title": "Value",
+                    "description": "The value of the surface area",
+                    "type": "number"
+                  },
+                  "unit": {
+                    "title": "Unit",
+                    "description": "The unit of the surface area",
+                    "type": "string",
+                    "enum": ["cm²", "m²", "other"]
+                  }
+                }
+              },
+              "texture": {
+                "title": "Texture map details",
+                "type": "string"
+              }
+            }
+          },
+          "dataProcessing": {
+            "title": "Data processing history",
+            "description": "Any data processing steps used to create this specific output",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": {
+                  "title": "Type",
+                  "description": "The type of data processing that was used",
+                  "type": "string",
+                  "examples": [
+                    "Alignment",
+                    "Dense Cloud",
+                    "Mesh Generation",
+                    "Decimation",
+                    "Texture Baking",
+                    "Other"
+                  ]
+                },
+                "detail": {
+                  "title": "Detail",
+                  "description": "Any additional details about the data processing",
+                  "type": "string"
+                },
+                "errorMetrics": {
+                  "title": "Error metrics",
+                  "description": "Error metrics",
+                  "type": "string",
+                  "enum": [
+                    "Global RMSE",
+                    "Mean reprojection error in pixels",
+                    "Other"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "relatedIdentifiers": {
       "title": "Related identifiers",
       "description": "External references to related resources",
@@ -280,174 +479,6 @@
             "title": "Description / citation",
             "description": "Short textual description or citation string for UI display",
             "type": "string"
-          }
-        }
-      }
-    },
-    "parameters": {
-      "title": "Parameters",
-      "description": "The parameters of the data acquisition",
-      "type": "object",
-      "properties": {
-        "creationMethod": {
-          "title": "The methodology used to create the 3D model",
-          "type": "string",
-          "enum": [
-            "Photogrammetry",
-            "Laser scanning",
-            "Structured Light Scanning",
-            "Other / Hybrid"
-          ]
-        },
-        "finalModelType": {
-          "title": "Final 3D model type",
-          "description": "The type of the final 3D model",
-          "type": "string",
-          "enum": [
-            "Point cloud",
-            "Mesh",
-            "Textured model",
-            "Nontextured model",
-            "Photogrammetric model",
-            "Other"
-          ]
-        },
-        "lighting": {
-          "title": "Lighting conditions",
-          "description": "Lighting conditions",
-          "type": "string"
-        },
-        "scaling": {
-          "title": "Scaling/Reference Method ",
-          "type": "object",
-          "format": "grid",
-          "properties": {
-            "scalingMethod": {
-              "title": "Scaling method",
-              "type": "string",
-              "enum": [
-                "Scale bar",
-                "Total station ground control points",
-                "Other"
-              ]
-            },
-            "measurementUnits": {
-              "title": "Measurement units",
-              "description": "Measurement units",
-              "type": "string",
-              "enum": ["mm", "cm", "m", "Other"]
-            }
-          }
-        },
-        "capture": {
-          "title": "Capture details",
-          "description": "Information about the type and number of captures. ",
-          "type": "object",
-          "format": "grid",
-          "properties": {
-            "captureType": {
-              "title": "Type",
-              "description": "The element captured to create the model",
-              "type": "string",
-              "enum": ["Digital image", "Thermal image", "Scan", "Other"]
-            },
-            "captureNumber": {
-              "title": "Capture number",
-              "description": "Number of captures made (number of photos, scans)",
-              "type": "number"
-            }
-          }
-        },
-        "meshProperties": {
-          "title": "Mesh properties",
-          "type": "object",
-          "properties": {
-            "polygonCount": {
-              "title": "Polygon count",
-              "description": "Number of mesh polygons",
-              "type": "number"
-            },
-            "vertexCount": {
-              "title": "Vertex count",
-              "description": "Number of vertices",
-              "type": "number"
-            },
-            "volume": {
-              "title": "Volume",
-              "description": "Volume of the 3D model",
-              "type": "object",
-              "format": "grid",
-              "required": ["value", "unit"],
-              "properties": {
-                "value": {
-                  "title": "Value",
-                  "description": "The value of the volume",
-                  "type": "number"
-                },
-                "unit": {
-                  "title": "Unit",
-                  "description": "The unit of the volume",
-                  "type": "string",
-                  "enum": ["cm³", "m³", "other"]
-                }
-              }
-            },
-            "surfaceArea": {
-              "title": "Surface area",
-              "description": "Surface area of the 3D model",
-              "type": "object",
-              "format": "grid",
-              "required": ["value", "unit"],
-              "properties": {
-                "value": {
-                  "title": "Value",
-                  "description": "The value of the surface area",
-                  "type": "number"
-                },
-                "unit": {
-                  "title": "Unit",
-                  "description": "The unit of the surface area",
-                  "type": "string",
-                  "enum": ["cm²", "m²", "other"]
-                }
-              }
-            },
-            "texture": {
-              "title": "Texture map details",
-              "type": "string"
-            }
-          }
-        },
-        "dataProcessing": {
-          "title": "Data processing",
-          "description": "Any data processing that was used to make the measurement",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["type"],
-            "properties": {
-              "type": {
-                "title": "Type",
-                "description": "The type of data processing that was used",
-                "type": "string",
-                "enum": ["Alignment", "Other"]
-              },
-              "detail": {
-                "title": "Detail",
-                "description": "Any additional details about the data processing",
-                "type": "string"
-              },
-              "errorMetrics": {
-                "title": "Error metrics",
-                "description": "Error metrics",
-                "type": "string",
-                "enum": [
-                  "Global RMSE",
-                  "Mean reprojection error in pixels",
-                  "Other"
-                ]
-              }
-            }
           }
         }
       }
